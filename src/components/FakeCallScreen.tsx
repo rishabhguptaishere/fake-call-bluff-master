@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Hash, Headphones, PhoneOff, Plus, User } from 'lucide-react';
+import { Mic, MicOff, Hash, Headphones, PhoneOff, Plus, User, Video, Clock } from 'lucide-react';
 
 interface FakeCallScreenProps {
   callerName: string;
@@ -36,9 +36,9 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
   return (
     <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden font-sans">
       {/* Background with subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black"></div>
       
-      {/* Status bar - more iPhone-like */}
+      {/* Status bar - iPhone style */}
       <div className="relative z-10 flex justify-between items-center px-6 pt-3 pb-2">
         <div className="flex items-center space-x-1">
           <div className="flex space-x-1">
@@ -64,10 +64,10 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
         {/* Caller info */}
         <div className="text-center flex-1 flex flex-col justify-center">
           <div className="text-lg text-gray-300 mb-6 font-light">
-            {isCallAnswered ? formatCallDuration(callDuration) : 'Incoming call...'}
+            {isCallAnswered ? formatCallDuration(callDuration) : 'calling...'}
           </div>
           
-          {/* Avatar with glow effect */}
+          {/* Avatar */}
           <div className="relative mb-8">
             <div className="w-48 h-48 bg-gradient-to-br from-gray-600 to-gray-800 rounded-full mx-auto flex items-center justify-center shadow-2xl shadow-black/50 border-4 border-gray-700">
               <span className="text-6xl font-light text-white capitalize">{callerName.charAt(0)}</span>
@@ -78,7 +78,6 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
           </div>
           
           <h1 className="text-4xl font-light mb-4 capitalize text-white">{callerName}</h1>
-          <p className="text-gray-400 text-lg font-light">Mobile</p>
         </div>
 
         {/* Call controls */}
@@ -110,39 +109,63 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
               </Button>
             </div>
           ) : (
-            /* Active call controls - cleaner iPhone layout */
-            <div className="space-y-8">
+            /* Active call controls - exact iPhone layout */
+            <div className="space-y-12">
               {/* Top row of controls */}
-              <div className="flex justify-center space-x-12">
+              <div className="flex justify-center space-x-16">
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => setIsMuted(!isMuted)}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-                      isMuted ? 'bg-white text-black' : 'bg-gray-800/80 text-white backdrop-blur-sm border border-gray-600'
+                    className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                      isMuted ? 'bg-white text-black' : 'bg-gray-700/80 text-white backdrop-blur-sm'
                     }`}
                   >
-                    {isMuted ? <MicOff size={28} /> : <Mic size={28} />}
+                    {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
                   </Button>
-                  <span className="text-sm text-gray-400 mt-3 font-light">mute</span>
+                  <span className="text-sm text-gray-400 mt-2 font-light">mute</span>
                 </div>
                 
                 <div className="flex flex-col items-center">
-                  <Button className="w-20 h-20 bg-gray-800/80 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-600">
-                    <Hash size={28} />
+                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <Hash size={24} />
                   </Button>
-                  <span className="text-sm text-gray-400 mt-3 font-light">keypad</span>
+                  <span className="text-sm text-gray-400 mt-2 font-light">keypad</span>
                 </div>
                 
                 <div className="flex flex-col items-center">
-                  <Button className="w-20 h-20 bg-gray-800/80 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-600">
-                    <Headphones size={28} />
+                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <Headphones size={24} />
                   </Button>
-                  <span className="text-sm text-gray-400 mt-3 font-light">speaker</span>
+                  <span className="text-sm text-gray-400 mt-2 font-light">speaker</span>
+                </div>
+              </div>
+              
+              {/* Second row of controls */}
+              <div className="flex justify-center space-x-16">
+                <div className="flex flex-col items-center">
+                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <Plus size={24} />
+                  </Button>
+                  <span className="text-sm text-gray-400 mt-2 font-light">add call</span>
+                </div>
+                
+                <div className="flex flex-col items-center">
+                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <Video size={24} />
+                  </Button>
+                  <span className="text-sm text-gray-400 mt-2 font-light">FaceTime</span>
+                </div>
+                
+                <div className="flex flex-col items-center">
+                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <User size={24} />
+                  </Button>
+                  <span className="text-sm text-gray-400 mt-2 font-light">contacts</span>
                 </div>
               </div>
               
               {/* End call button - centered */}
-              <div className="flex justify-center pt-8">
+              <div className="flex justify-center pt-4">
                 <Button
                   onClick={onEndCall}
                   className="w-20 h-20 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25"

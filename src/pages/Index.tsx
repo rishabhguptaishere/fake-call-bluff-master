@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import FakeCallScreen from '@/components/FakeCallScreen';
@@ -18,7 +17,7 @@ const Index = () => {
   ];
 
   useEffect(() => {
-    // Create audio element for ringtone
+    // Create audio element for a more realistic iPhone-style ringtone
     const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav');
     audio.loop = true;
     audio.preload = 'auto';
