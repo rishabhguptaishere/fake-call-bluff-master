@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Keypad, Headphones, PhoneOff, Plus, Contacts } from 'lucide-react';
+import { Mic, MicOff, Hash, Headphones, PhoneOff, Plus, User } from 'lucide-react';
 
 interface FakeCallScreenProps {
   callerName: string;
@@ -104,7 +104,7 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
                 
                 <div className="flex flex-col items-center">
                   <Button className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
-                    <Keypad size={24} />
+                    <Hash size={24} />
                   </Button>
                   <span className="text-xs text-gray-400 mt-2">keypad</span>
                 </div>
@@ -137,7 +137,7 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
                 
                 <div className="flex flex-col items-center">
                   <Button className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
-                    <Contacts size={24} />
+                    <User size={24} />
                   </Button>
                   <span className="text-xs text-gray-400 mt-2">contacts</span>
                 </div>
