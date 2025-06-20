@@ -8,7 +8,14 @@ const Index = () => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [ringtoneAudio, setRingtoneAudio] = useState<HTMLAudioElement | null>(null);
 
-  const callerNames = ['mom', 'wife', 'jake', 'boss', 'doctor', 'bank'];
+  const callerNames = [
+    { name: 'mom', emoji: '👩‍❤️‍👨' },
+    { name: 'wife', emoji: '💕' },
+    { name: 'jake', emoji: '👨' },
+    { name: 'boss', emoji: '💼' },
+    { name: 'doctor', emoji: '👨‍⚕️' },
+    { name: 'bank', emoji: '🏦' }
+  ];
 
   useEffect(() => {
     // Create audio element for ringtone
@@ -50,31 +57,35 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-8 font-sans">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-light text-gray-900 mb-2">Fake Phone Call</h1>
-          <p className="text-gray-500 text-sm">Choose a caller and get rescued from any situation</p>
+        <div className="text-center mb-12">
+          <div className="mb-4">
+            <span className="text-5xl">📞</span>
+          </div>
+          <h1 className="text-3xl font-light text-gray-900 mb-3 tracking-tight">Fake Phone Call</h1>
+          <p className="text-gray-500 text-base leading-relaxed">Choose a caller and get rescued from any situation</p>
         </div>
 
         {/* Caller Selection */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm">
-          <h2 className="text-lg font-medium text-gray-900 mb-4 text-center">Choose Name</h2>
+        <div className="bg-white border border-gray-100 rounded-2xl p-8 mb-8 shadow-lg shadow-gray-100/50">
+          <h2 className="text-xl font-medium text-gray-900 mb-6 text-center">Choose Name</h2>
           
-          <div className="grid grid-cols-3 gap-3 mb-6">
-            {callerNames.map((name) => (
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {callerNames.map(({ name, emoji }) => (
               <Button
                 key={name}
                 variant={selectedCaller === name ? "default" : "outline"}
-                className={`h-12 text-sm font-medium rounded-lg transition-all ${
+                className={`h-16 text-base font-medium rounded-2xl transition-all duration-200 flex flex-col items-center justify-center gap-1 ${
                   selectedCaller === name 
-                    ? 'bg-blue-500 text-white border-blue-500' 
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/25' 
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
                 }`}
                 onClick={() => setSelectedCaller(name)}
               >
-                {name}
+                <span className="text-lg">{emoji}</span>
+                <span className="capitalize font-medium">{name}</span>
               </Button>
             ))}
           </div>
@@ -83,19 +94,20 @@ const Index = () => {
           <Button
             onClick={handleCallMeNow}
             disabled={!selectedCaller}
-            className={`w-full h-14 text-lg font-medium rounded-xl transition-all ${
+            className={`w-full h-16 text-lg font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 ${
               selectedCaller 
-                ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg' 
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                ? 'bg-red-500 hover:bg-red-600 text-white shadow-xl shadow-red-500/25 hover:shadow-red-500/40' 
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >
+            <span className="text-xl">🚨</span>
             call me asap
           </Button>
         </div>
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-xs text-gray-400">fakephonecall.com</p>
+          <p className="text-sm text-gray-400 font-light">fakephonecall.com</p>
         </div>
       </div>
     </div>
