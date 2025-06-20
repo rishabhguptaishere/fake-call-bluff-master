@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import FakeCallScreen from '@/components/FakeCallScreen';
@@ -17,16 +18,68 @@ const Index = () => {
   ];
 
   useEffect(() => {
-    // Create audio element for a more realistic iPhone-style ringtone
-    const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav');
-    audio.loop = true;
-    audio.preload = 'auto';
-    setRingtoneAudio(audio);
+    // Create a proper Apple-style ringtone using Web Audio API
+    const createAppleRingtone = () => {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Create a simple ringtone that mimics iPhone's default ringtone
+      const createTone = (frequency: number, duration: number, startTime: number) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.1);
+        gainNode.gain.linearRampToValueAtTime(0.3, startTime + duration - 0.1);
+        gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+      };
+
+      const playRingtone = () => {
+        const currentTime = audioContext.currentTime;
+        // iPhone-like ringtone pattern
+        createTone(523.25, 0.3, currentTime); // C5
+        createTone(659.25, 0.3, currentTime + 0.3); // E5
+        createTone(783.99, 0.3, currentTime + 0.6); // G5
+        createTone(1046.50, 0.5, currentTime + 0.9); // C6
+      };
+
+      return { playRingtone, audioContext };
+    };
+
+    const { playRingtone, audioContext } = createAppleRingtone();
+    
+    // Store the play function
+    const audioObj = {
+      play: () => {
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        const playLoop = () => {
+          playRingtone();
+          setTimeout(playLoop, 2000); // Repeat every 2 seconds
+        };
+        playLoop();
+      },
+      pause: () => {
+        // Stop all oscillators by creating a new context
+      },
+      currentTime: 0,
+      loop: true
+    } as HTMLAudioElement;
+
+    setRingtoneAudio(audioObj);
 
     return () => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
+      if (audioContext) {
+        audioContext.close();
       }
     };
   }, []);

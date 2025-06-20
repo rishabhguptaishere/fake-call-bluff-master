@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Hash, Headphones, PhoneOff, Plus, User, Video, Clock } from 'lucide-react';
+import { Mic, MicOff, Hash, Volume2, PhoneOff, Plus, User, Video, VideoOff } from 'lucide-react';
 
 interface FakeCallScreenProps {
   callerName: string;
@@ -11,6 +11,7 @@ interface FakeCallScreenProps {
 const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }) => {
   const [isCallAnswered, setIsCallAnswered] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isVideoCall, setIsVideoCall] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
 
   useEffect(() => {
@@ -33,8 +34,25 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
     setIsCallAnswered(true);
   };
 
+  const handleAnswerVideoCall = () => {
+    setIsCallAnswered(true);
+    setIsVideoCall(true);
+  };
+
+  const getCallerEmoji = (name: string) => {
+    const emojiMap: { [key: string]: string } = {
+      'mom': '👩‍❤️‍👨',
+      'wife': '💕',
+      'jake': '👨',
+      'boss': '💼',
+      'doctor': '👨‍⚕️',
+      'bank': '🏦'
+    };
+    return emojiMap[name.toLowerCase()] || '👤';
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden">
       {/* Background with subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black"></div>
       
@@ -70,7 +88,7 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
           {/* Avatar */}
           <div className="relative mb-8">
             <div className="w-48 h-48 bg-gradient-to-br from-gray-600 to-gray-800 rounded-full mx-auto flex items-center justify-center shadow-2xl shadow-black/50 border-4 border-gray-700">
-              <span className="text-6xl font-light text-white capitalize">{callerName.charAt(0)}</span>
+              <span className="text-6xl">{getCallerEmoji(callerName)}</span>
             </div>
             {!isCallAnswered && (
               <div className="absolute inset-0 w-48 h-48 rounded-full border-4 border-white/20 animate-pulse mx-auto"></div>
@@ -78,35 +96,64 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
           </div>
           
           <h1 className="text-4xl font-light mb-4 capitalize text-white">{callerName}</h1>
+          {isVideoCall && isCallAnswered && (
+            <p className="text-gray-400 text-lg">FaceTime Video</p>
+          )}
         </div>
 
         {/* Call controls */}
         <div className="w-full max-w-sm">
           {!isCallAnswered ? (
-            /* Incoming call controls - iPhone style */
-            <div className="flex justify-between items-center px-4">
-              {/* Message button */}
-              <Button className="w-16 h-16 bg-gray-800/80 hover:bg-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-600">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-                </svg>
-              </Button>
-              
-              {/* Decline button */}
-              <Button
-                onClick={onEndCall}
-                className="w-20 h-20 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25"
-              >
-                <PhoneOff size={28} />
-              </Button>
-              
-              {/* Accept button */}
-              <Button
-                onClick={handleAnswerCall}
-                className="w-20 h-20 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/25"
-              >
-                <PhoneCall size={28} />
-              </Button>
+            /* Incoming call controls - iPhone style with video option */
+            <div className="space-y-8">
+              {/* Action buttons row */}
+              <div className="flex justify-center space-x-12">
+                <div className="flex flex-col items-center">
+                  <Button className="w-16 h-16 bg-gray-800/80 hover:bg-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-600">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                  </Button>
+                  <span className="text-sm text-gray-400 mt-2 font-light">Message</span>
+                </div>
+                
+                <div className="flex flex-col items-center">
+                  <Button className="w-16 h-16 bg-gray-800/80 hover:bg-gray-700 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-600">
+                    <User size={24} />
+                  </Button>
+                  <span className="text-sm text-gray-400 mt-2 font-light">Remind Me</span>
+                </div>
+              </div>
+
+              {/* Main call controls */}
+              <div className="flex justify-between items-center px-4">
+                {/* Decline button */}
+                <Button
+                  onClick={onEndCall}
+                  className="w-20 h-20 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25"
+                >
+                  <PhoneOff size={28} />
+                </Button>
+                
+                {/* Accept buttons */}
+                <div className="flex space-x-4">
+                  {/* Audio call */}
+                  <Button
+                    onClick={handleAnswerCall}
+                    className="w-20 h-20 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/25"
+                  >
+                    <PhoneCall size={28} />
+                  </Button>
+                  
+                  {/* Video call */}
+                  <Button
+                    onClick={handleAnswerVideoCall}
+                    className="w-20 h-20 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/25"
+                  >
+                    <Video size={28} />
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : (
             /* Active call controls - exact iPhone layout */
@@ -134,7 +181,7 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
                 
                 <div className="flex flex-col items-center">
                   <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <Headphones size={24} />
+                    <Volume2 size={24} />
                   </Button>
                   <span className="text-sm text-gray-400 mt-2 font-light">speaker</span>
                 </div>
@@ -150,8 +197,13 @@ const FakeCallScreen: React.FC<FakeCallScreenProps> = ({ callerName, onEndCall }
                 </div>
                 
                 <div className="flex flex-col items-center">
-                  <Button className="w-16 h-16 bg-gray-700/80 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <Video size={24} />
+                  <Button
+                    onClick={() => setIsVideoCall(!isVideoCall)}
+                    className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                      isVideoCall ? 'bg-white text-black' : 'bg-gray-700/80 text-white backdrop-blur-sm'
+                    }`}
+                  >
+                    {isVideoCall ? <VideoOff size={24} /> : <Video size={24} />}
                   </Button>
                   <span className="text-sm text-gray-400 mt-2 font-light">FaceTime</span>
                 </div>
